@@ -4,7 +4,7 @@ from htmlnode import (
   HTMLNode,
 )
 
-class TestTextNode(unittest.TestCase):
+class TestHTMLNode(unittest.TestCase):
   def test_eq(self):
     linknode = HTMLNode("a", "A link to Google.com", None, {"href": "https://www.google.com", "target": "_blank",})
     self.assertEqual(linknode.tag, "a")
