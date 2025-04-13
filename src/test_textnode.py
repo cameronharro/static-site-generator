@@ -10,6 +10,7 @@ class TestTextNode(unittest.TestCase):
     node = TextNode("This is a text node", TextType.BOLD)
     node2 = TextNode("This is a text node", TextType.BOLD)
     self.assertEqual(node, node2)
+    self.assertRaises(ValueError, TextNode, "some bolded text", 'bold')
 
 if __name__ == "__main__":
   unittest.main()
