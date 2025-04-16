@@ -17,7 +17,7 @@ h_re = r"#{1,6}\ .*(?!\n)"
 code_re = r"^```(.|[\n])*```$"
 quote_line_re = r"^>.*"
 ul_line_re = r"^-\ .*"
-ol_line_re = r"\n(\d+)\..*"
+ol_line_re = r"^(\d+)\.\ .*"
 
 def markdown_to_blocks(markdown):
   blocks = markdown.split("\n\n")
@@ -37,4 +37,10 @@ def block_to_block_type(block):
   ul = re.findall(ul_line_re, block, re.M)
   if len(ul) == len(new_lines) + 1:
     return BlockType.UNORDERED_LIST  
+  ol = re.findall(ol_line_re, block, re.M)
+  if len(ol) == len(new_lines) + 1:
+    numbers = list(map(lambda x: int(x), ol))
+    target = list(range(1, len(ol) + 1))
+    if numbers == target:
+      return BlockType.ORDERED_LIST  
   return BlockType.PARAGRAPH

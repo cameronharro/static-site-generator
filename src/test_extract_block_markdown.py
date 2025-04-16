@@ -177,3 +177,27 @@ class TestBlockToUL(unittest.TestCase):
 - A second list item
 - A third list item"""
     self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+class TestBlockToOL(unittest.TestCase):
+  def test_single_line(self):
+    block = "1. A list item"
+    self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST)
+  def test_multi_line(self):
+    block = """1. A list item
+2. A second list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST)
+  def test_unstripped(self):
+    block = """
+1. A list item
+2. A second list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+  def test_wrong_markdown(self):
+    block = """1. A list item
+3. A second list item
+3. A third list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+  def test_more_wrong_markdown(self):
+    block = """1.A list item
+2. A second list item
+3. A third list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
