@@ -6,19 +6,21 @@ from textnode import (
 )
 
 from split_nodes import (
-  split_nodes_delimiter,
+  split_nodes_bold,
+  split_nodes_italic,
+  split_nodes_code,
   split_nodes_image,
   split_nodes_link,
 )
 
 class TestSplitDelimiter(unittest.TestCase):
-  bold_node = TextNode("This is text with a *bold* word", TextType.TEXT)
+  bold_node = TextNode("This is text with a **bold** word", TextType.TEXT)
   italic_node = TextNode("This is text with an _italic_ word", TextType.TEXT)
   code_node = TextNode("This is text with a `code block`", TextType.TEXT)
-  multi_marked_node = TextNode("This `text block` has _multiple_ different *markup* styles", TextType.TEXT)
+  multi_marked_node = TextNode("This `text block` has _multiple_ different **markup** styles", TextType.TEXT)
 
   def test_bold_node(self):
-    new_nodes = split_nodes_delimiter([self.bold_node], "*", TextType.BOLD)
+    new_nodes = split_nodes_bold([self.bold_node])
     self.assertEqual(
       new_nodes,
       [
@@ -29,7 +31,7 @@ class TestSplitDelimiter(unittest.TestCase):
     )
 
   def test_italic_node(self):
-    new_nodes = split_nodes_delimiter([self.italic_node], "_", TextType.ITALIC)
+    new_nodes = split_nodes_italic([self.italic_node])
     self.assertEqual(
       new_nodes,
       [
@@ -40,7 +42,7 @@ class TestSplitDelimiter(unittest.TestCase):
     )
 
   def test_code_node(self):
-    new_nodes = split_nodes_delimiter([self.code_node], "`", TextType.CODE)
+    new_nodes = split_nodes_code([self.code_node])
     self.assertEqual(
       new_nodes,
       [
@@ -50,7 +52,7 @@ class TestSplitDelimiter(unittest.TestCase):
     )
 
   def test_multiple_nodes(self):
-    new_nodes = split_nodes_delimiter([self.bold_node, self.italic_node], "*", TextType.BOLD)
+    new_nodes = split_nodes_bold([self.bold_node, self.italic_node])
     self.assertEqual(
       new_nodes, 
       [
@@ -62,19 +64,7 @@ class TestSplitDelimiter(unittest.TestCase):
     )
 
   def test_multi_node(self):
-    new_nodes = split_nodes_delimiter(
-      split_nodes_delimiter(
-        split_nodes_delimiter(
-          [self.multi_marked_node],
-          "`",
-          TextType.CODE,
-        ),
-        "_",
-        TextType.ITALIC,
-        ),
-      "*",
-      TextType.BOLD,
-    )
+    new_nodes = split_nodes_bold(split_nodes_italic(split_nodes_code([self.multi_marked_node])))
     self.assertEqual(
       new_nodes,
       [
