@@ -11,6 +11,9 @@ def split_nodes_delimiter(delimiter, text_type):
       raise ValueError("text_type must be an instance of the TextType enum")
     new_nodes = []
     for node in old_nodes:
+      if node.text_type != TextType.TEXT:
+        new_nodes.append(node)
+        continue
       text = node.text
       parent_type = node.text_type
       split_text = text.split(delimiter)
@@ -57,6 +60,9 @@ def split_url_node(regex, target_type):
     for node in old_nodes:
       if not isinstance(node.text_type, TextType):
         raise ValueError("text_type must be an instance of the TextType enum")
+      if node.text_type != TextType.TEXT:
+        new_nodes.append(node)
+        continue
       text = node.text
       splt = re.split(regex, text)
       new_nodes.extend(filter(lambda x: x, map(map_text_to_node(node.text_type), splt)))
