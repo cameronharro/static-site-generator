@@ -134,3 +134,22 @@ and other stuff :/?%
 ```
 but it has trailing text"""
     self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+class TestBlockToQuote(unittest.TestCase):
+  def test_single_line(self):
+    block = ">A quote"
+    self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
+  def test_multi_line(self):
+    block = """>A quote
+>A second quote"""
+    self.assertEqual(block_to_block_type(block), BlockType.QUOTE)
+  def test_unstripped(self):
+    block = """
+>A quote
+>A second quote"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+  def test_wrong_markdown(self):
+    block = """>A quote
+-A second quote
+>A third quote"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
