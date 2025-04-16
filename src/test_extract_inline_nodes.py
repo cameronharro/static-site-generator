@@ -5,7 +5,7 @@ from textnode import (
   TextType,
 )
 
-from split_nodes import (
+from extract_inline_nodes import (
   split_nodes_bold,
   split_nodes_italic,
   split_nodes_code,
