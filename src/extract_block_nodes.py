@@ -14,7 +14,7 @@ BlockType = Enum(
 )
 
 h_re = r"#{1,6}\ .*(?!\n)"
-code_re = r"```.*```"
+code_re = r"^```(.|[\n])*```$"
 quote_line_re = r"\n>.*"
 ul_line_re = r"\n-.*"
 ol_line_re = r"\n(\d+)\..*"
@@ -27,4 +27,7 @@ def block_to_block_type(block):
   heading = re.match(h_re, block)
   if heading:
     return BlockType.HEADING
+  code = re.match(code_re, block)
+  if code:
+    return BlockType.CODE
   return BlockType.PARAGRAPH

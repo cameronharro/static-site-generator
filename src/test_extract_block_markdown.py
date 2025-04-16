@@ -101,3 +101,36 @@ class TestBlockToHeading(unittest.TestCase):
   def test_no_space(self):
     block = "#Heading"
     self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+class TestBlockToCode(unittest.TestCase):
+  def test_code(self):
+    block = "```Here is some single-line code```"
+    self.assertEqual(block_to_block_type(block), BlockType.CODE)
+
+  def test_multiline(self):
+    block = """```
+Here is some code
+It's multiline
+{It has braces}
+and other stuff :/?%
+```"""
+    self.assertEqual(block_to_block_type(block), BlockType.CODE)
+  def test_un_stripped(self):
+    block = """
+    ```
+Here is some code
+It's multiline
+{It has braces}
+and other stuff :/?%
+```"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+  def test_not_divided(self):
+    block = """
+    ```
+Here is some code
+It's multiline
+{It has braces}
+and other stuff :/?%
+```
+but it has trailing text"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
