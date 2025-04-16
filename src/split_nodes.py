@@ -71,3 +71,12 @@ def split_url_node(regex, target_type):
 
 split_nodes_image = split_url_node(image_re, TextType.IMAGE)
 split_nodes_link = split_url_node(link_re, TextType.LINK)
+
+def split_inline_markdown(text):
+  initial_node = [TextNode(text, TextType.TEXT)]
+  bold_extracted = split_nodes_bold(initial_node)
+  italic_extracted = split_nodes_italic(bold_extracted)
+  code_extracted = split_nodes_code(italic_extracted)
+  link_extracted = split_nodes_link(code_extracted)
+  image_extracted = split_nodes_image(link_extracted)
+  return image_extracted

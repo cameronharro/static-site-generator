@@ -11,6 +11,7 @@ from split_nodes import (
   split_nodes_code,
   split_nodes_image,
   split_nodes_link,
+  split_inline_markdown,
 )
 
 class TestSplitDelimiter(unittest.TestCase):
@@ -233,6 +234,26 @@ class TestSplitLink(unittest.TestCase):
         TextNode("hyperlink", TextType.LINK, "https://i.imgur.com/3elNhQu.png"),
         TextNode("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and a ", TextType.TEXT),
         TextNode("hyperlink", TextType.LINK, "https://i.imgur.com/3elNhQu.png"),
+      ],
+      new_nodes,
+    )
+
+class TestSplitAll(unittest.TestCase):
+  def test_split_all(self):
+    text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+    new_nodes = split_inline_markdown(text)
+    self.assertListEqual(
+      [
+        TextNode("This is ", TextType.TEXT),
+        TextNode("text", TextType.BOLD),
+        TextNode(" with an ", TextType.TEXT),
+        TextNode("italic", TextType.ITALIC),
+        TextNode(" word and a ", TextType.TEXT),
+        TextNode("code block", TextType.CODE),
+        TextNode(" and an ", TextType.TEXT),
+        TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+        TextNode(" and a ", TextType.TEXT),
+        TextNode("link", TextType.LINK, "https://boot.dev"),
       ],
       new_nodes,
     )
