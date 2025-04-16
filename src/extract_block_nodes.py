@@ -16,7 +16,7 @@ BlockType = Enum(
 h_re = r"#{1,6}\ .*(?!\n)"
 code_re = r"^```(.|[\n])*```$"
 quote_line_re = r"^>.*"
-ul_line_re = r"\n-.*"
+ul_line_re = r"^-\ .*"
 ol_line_re = r"\n(\d+)\..*"
 
 def markdown_to_blocks(markdown):
@@ -34,4 +34,7 @@ def block_to_block_type(block):
   quote = re.findall(quote_line_re, block, re.M)
   if len(quote) == len(new_lines) + 1:
     return BlockType.QUOTE
+  ul = re.findall(ul_line_re, block, re.M)
+  if len(ul) == len(new_lines) + 1:
+    return BlockType.UNORDERED_LIST  
   return BlockType.PARAGRAPH

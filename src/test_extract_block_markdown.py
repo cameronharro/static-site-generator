@@ -153,3 +153,27 @@ class TestBlockToQuote(unittest.TestCase):
 -A second quote
 >A third quote"""
     self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+class TestBlockToUL(unittest.TestCase):
+  def test_single_line(self):
+    block = "- A list item"
+    self.assertEqual(block_to_block_type(block), BlockType.UNORDERED_LIST)
+  def test_multi_line(self):
+    block = """- A list item
+- A second list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.UNORDERED_LIST)
+  def test_unstripped(self):
+    block = """
+- A list item
+- A second list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+  def test_wrong_markdown(self):
+    block = """- A list item
+> A second list item
+- A third list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+  def test_more_wrong_markdown(self):
+    block = """-A list item
+- A second list item
+- A third list item"""
+    self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
