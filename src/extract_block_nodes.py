@@ -21,7 +21,7 @@ ol_line_re = r"^(\d+)\.\ .*"
 
 def markdown_to_blocks(markdown):
   blocks = markdown.split("\n\n")
-  return list(map(lambda x: x.strip("\n "), blocks))
+  return list(filter(lambda x: len(x) > 0, map(lambda x: x.strip("\n "), blocks)))
 
 def block_to_block_type(block):
   heading = re.match(h_re, block)
