@@ -1,5 +1,5 @@
-from leafnode import (
-  LeafNode
+from htmlnode import (
+  LeafNode,
 )
 
 def text_node_to_leaf_node(text_node):
