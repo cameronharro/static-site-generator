@@ -7,6 +7,7 @@ from textnode import (
 
 from markdown_to_html import (
   text_node_to_leaf_node,
+  markdown_to_html_node,
 )
 
 class TestTextToLeafConversion(unittest.TestCase):
@@ -70,6 +71,102 @@ class TestTextToLeafConversion(unittest.TestCase):
       leaf_node.to_html(),
       "<img alt=\"This is an image node\" src=\"https://hubspot.com\"></img>"
     )
+
+class TestMarkdownToHTML(unittest.TestCase):
+  def test_paragraphs(self):
+      md = """
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+
+      node = markdown_to_html_node(md)
+      desired_result = "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>"
+      html = node.to_html()
+      self.assertEqual(
+          html,
+          desired_result,
+      )
+
+  def test_codeblock(self):
+    md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
+
+    node = markdown_to_html_node(md)
+    desired_result = "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff</code></pre></div>"
+    html = node.to_html()
+    self.assertEqual(
+        html,
+        desired_result,
+    )
+
+  def test_headings(self):
+    md = """
+# Heading 1
+
+## Heading 2
+"""
+
+    node = markdown_to_html_node(md)
+    desired_result = "<div><h1>Heading 1</h1><h2>Heading 2</h2></div>"
+    html = node.to_html()
+    self.assertEqual(
+        html,
+        desired_result,
+    )
+
+  def test_blockquote(self):
+    md = """
+>This is
+>a blockquote
+>that's three lines long
+"""
+
+    node = markdown_to_html_node(md)
+    desired_result = "<div><blockquote>This is a blockquote that's three lines long</blockquote></div>"
+    html = node.to_html()
+    self.assertEqual(
+        html,
+        desired_result,
+    )
+    
+  def test_ul(self):
+    md = """
+- This is
+- a list
+- that's **three lines long**
+"""
+
+    node = markdown_to_html_node(md)
+    desired_result = "<div><ul><li>This is</li><li>a list</li><li>that's <b>three lines long</b></li></ul></div>"
+    html = node.to_html()
+    self.assertEqual(
+        html,
+        desired_result,
+    )
+    
+  def test_ol(self):
+    md = """
+1. This is
+2. a list
+3. that's **three lines long**
+"""
+
+    node = markdown_to_html_node(md)
+    desired_result = "<div><ol><li>This is</li><li>a list</li><li>that's <b>three lines long</b></li></ol></div>"
+    html = node.to_html()
+    self.assertEqual(
+        html,
+        desired_result,
+    )
+    
 
 if __name__ == "__main__":
   unittest.main()
