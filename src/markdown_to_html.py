@@ -70,7 +70,7 @@ def strip_block_md(text, block_type):
     case "code":
       return text.strip("`\n")
     case "blockquote":
-      return text.replace(">", "")
+      return text.replace(">", "").strip(" ")
     case "ul":
       return text.replace("- ", "")
     case "ol":
