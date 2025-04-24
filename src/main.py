@@ -1,3 +1,7 @@
+from sys import (
+  argv
+)
+
 from os import (
   listdir,
   mkdir, 
@@ -50,7 +54,7 @@ def get_paths_recursive(curr_path):
       dirs.extend(nested_dirs)
   return files, dirs
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
   print(f"Generating page from {from_path} to {dest_path} using {template_path}")
   src_file = open(from_path)
   md = src_file.read()
@@ -64,12 +68,14 @@ def generate_page(from_path, template_path, dest_path):
   content = markdown_to_html_node(md).to_html()
   html = html.replace("{{ Title }}", title)
   html = html.replace("{{ Content }}", content)
+  html = html.replace("href=\"/", f"href=\"{basepath}")
+  html = html.replace("src=\"/", f"src=\"{basepath}")
   
   dest_file = open(dest_path, "x")
   dest_file.write(html)
   dest_file.close()
 
-def generate_pages_recursive(src_root_path, template_path, dest_root_path):
+def generate_pages_recursive(src_root_path, template_path, dest_root_path, basepath):
   src_p = Path(src_root_path)
   src_files, src_dirs = get_paths_recursive(src_p)
   copy_dir_tree(src_dirs, dest_root_path)
@@ -77,14 +83,15 @@ def generate_pages_recursive(src_root_path, template_path, dest_root_path):
     dest_path = matching_dest_path(dest_root_path, file)
     dirs = list(reversed(dest_path.parents))
     converted_extension = Path.joinpath(dirs[-1], dest_path.stem + ".html")
-    generate_page(file, template_path, converted_extension)
+    generate_page(file, template_path, converted_extension, basepath)
 
 def main():
-  dest_p = Path("./public")
+  basepath = argv[1] or "/"
+  dest_p = Path("./docs")
   if Path.exists(dest_p):
     rmtree(dest_p)
   clean_copy_directory_contents("./static", dest_p)
-  generate_pages_recursive("./content", "./template.html", dest_p)
+  generate_pages_recursive("./content", "./template.html", dest_p, basepath)
 
 if __name__ == "__main__":
   main()
