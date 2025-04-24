@@ -28,10 +28,8 @@ split_nodes_bold = split_nodes_delimiter("**", TextType.BOLD)
 split_nodes_italic = split_nodes_delimiter("_", TextType.ITALIC)
 split_nodes_code = split_nodes_delimiter("`", TextType.CODE)
 
-value_re = r"\[[\w\ ]*\]"
-url_re = r"\(https:\/\/[\w\.\/\@]*\)"
-link_re = "(" + "(?<!!)" + value_re + url_re + ")"
-image_re = "(!" + value_re + url_re + ")"
+link_re = r"(?<!!)(\[[^\[\]]*\]\([^\(\)]*\))"
+image_re = r"(!\[[^\[\]]*\]\([^\(\)]*\))"
 
 def extract_url_tuple(text):
   splt = text.split("](")

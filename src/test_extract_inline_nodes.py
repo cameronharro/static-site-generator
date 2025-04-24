@@ -258,5 +258,18 @@ class TestSplitAll(unittest.TestCase):
       new_nodes,
     )
 
+  def test_split_all(self):
+    text = "This site was generated with a custom-built [static site generator](https://www.boot.dev/courses/build-static-site-generator-python) from the course on [Boot.dev](https://www.boot.dev)"
+    new_nodes = split_inline_markdown(text)
+    self.assertListEqual(
+      [
+        TextNode("This site was generated with a custom-built ", TextType.TEXT),
+        TextNode("static site generator", TextType.LINK, "https://www.boot.dev/courses/build-static-site-generator-python"),
+        TextNode(" from the course on ", TextType.TEXT),
+        TextNode("Boot.dev", TextType.LINK, "https://www.boot.dev"),
+      ],
+      new_nodes,
+    )
+
 if __name__ == "__main__":
   unittest.main()
