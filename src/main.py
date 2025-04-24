@@ -69,11 +69,22 @@ def generate_page(from_path, template_path, dest_path):
   dest_file.write(html)
   dest_file.close()
 
+def generate_pages_recursive(src_root_path, template_path, dest_root_path):
+  src_p = Path(src_root_path)
+  src_files, src_dirs = get_paths_recursive(src_p)
+  copy_dir_tree(src_dirs, dest_root_path)
+  for file in src_files:
+    dest_path = matching_dest_path(dest_root_path, file)
+    dirs = list(reversed(dest_path.parents))
+    converted_extension = Path.joinpath(dirs[-1], dest_path.stem + ".html")
+    generate_page(file, template_path, converted_extension)
+
 def main():
   dest_p = Path("./public")
   if Path.exists(dest_p):
     rmtree(dest_p)
   clean_copy_directory_contents("./static", dest_p)
+  generate_pages_recursive("./content", "./template.html", dest_p)
 
 if __name__ == "__main__":
   main()
