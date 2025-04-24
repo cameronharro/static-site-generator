@@ -20,29 +20,31 @@ from markdown_to_html import(
 def matching_dest_path(dest_root, path):
   return Path.joinpath(dest_root, *path.parts[1:])
 
-def clean_copy_directory_contents(src_path, dest_path):
-  src_p = Path(src_path)
-  dest_p = Path(dest_path)
-  if Path.exists(dest_p):
-    rmtree(dest_p)
-  src_files, src_dirs = get_paths_recursive(src_p)
-  mkdir(dest_p)
+def copy_dir_tree(src_dirs, dest_root):
   for dir in src_dirs:
-    mkdir(matching_dest_path(dest_p, dir))
+    matching_dir = matching_dest_path(dest_root, dir)
+    if not Path.exists(matching_dir):
+      mkdir(matching_dir)
+
+def clean_copy_directory_contents(src_root, dest_root):
+  src_p = Path(src_root)
+  src_files, src_dirs = get_paths_recursive(src_p)
+  copy_dir_tree(src_dirs, dest_root)
   for path in src_files:
-    copy(path, matching_dest_path(dest_p, path))
+    copy(path, matching_dest_path(dest_root, path))
 
 def get_paths_recursive(curr_path):
   contained_paths = list(map(lambda x: Path.joinpath(curr_path, x), listdir(curr_path)))
   files = []
-  dirs = []
+  dirs = [curr_path]
+  next_calls = []
   for path in contained_paths:
     if Path.is_dir(path):
-      dirs.append(path)
+      next_calls.append(path)
     else:
       files.append(path)
-  if len(dirs) != 0:
-    for dir in dirs:
+  if len(files) != len(contained_paths):
+    for dir in next_calls:
       nested_files, nested_dirs = get_paths_recursive(dir)
       files.extend(nested_files)
       dirs.extend(nested_dirs)
@@ -68,8 +70,10 @@ def generate_page(from_path, template_path, dest_path):
   dest_file.close()
 
 def main():
-  clean_copy_directory_contents("./static", "./public")
-  generate_page("./content/index.md", "./template.html", "./public/index.html")
+  dest_p = Path("./public")
+  if Path.exists(dest_p):
+    rmtree(dest_p)
+  clean_copy_directory_contents("./static", dest_p)
 
 if __name__ == "__main__":
   main()
