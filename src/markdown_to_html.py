@@ -79,3 +79,9 @@ def strip_block_md(text, block_type):
       return text.lstrip("# ")
     case _:
       raise ValueError("block_type must be one of the BlockType Enum values")
+    
+def extract_title(text):
+  title = re.match(r"\n*#{1} (.*)\n*", text)
+  if not title:
+    raise Exception("Text has no valid H1 title")
+  return title.groups()[0]

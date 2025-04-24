@@ -8,6 +8,7 @@ from textnode import (
 from markdown_to_html import (
   text_node_to_leaf_node,
   markdown_to_html_node,
+  extract_title,
 )
 
 class TestTextToLeafConversion(unittest.TestCase):
@@ -166,7 +167,23 @@ the **same** even with inline stuff
         html,
         desired_result,
     )
+
+class TestExtractTitle(unittest.TestCase):
+  def test_first_line(self):
+    md = "# Heading 1"
+    self.assertEqual("Heading 1", extract_title(md))
     
+  def test_second_line(self):
+    md = """
+# Heading 1
+"""
+    self.assertEqual("Heading 1", extract_title(md))
+    
+  def test_no_h1(self):
+    md = """
+## Heading 2
+"""
+    self.assertRaises(Exception, extract_title, md)
 
 if __name__ == "__main__":
   unittest.main()
